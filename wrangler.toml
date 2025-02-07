@@ -1,0 +1,18 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "cloudflare-deepseek-code-reviewer"
+
+main = "./server.ts"
+workers_dev = true
+# https://developers.cloudflare.com/workers/platform/compatibility-dates
+compatibility_date = "2024-09-26"
+
+[build]
+command = "pnpm run build"
+
+[assets]
+# https://developers.cloudflare.com/workers/static-assets/binding/
+directory = "./build/client"
+
+[[kv_namespaces]]
+binding = "github_prompts"
+id = "3ed13275f1d0477da239445c1952ee74"

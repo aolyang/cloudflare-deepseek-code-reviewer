@@ -1,16 +1,16 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { combine, combineGlobals,ignores } from "@aolyang/eslint-config"
+import importExport from "@aolyang/eslint-config/import-export"
+import react        from "@aolyang/eslint-config/react"
+import stylistic    from "@aolyang/eslint-config/stylistic"
+import typescript   from "@aolyang/eslint-config/typescript"
+import globals from "globals"
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+export default combine(
+    combineGlobals(globals.node),
+    react(),
+    stylistic(),
+    typescript(),
+    importExport(),
+    { ignores }
+)
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
-
-export default eslintConfig;
