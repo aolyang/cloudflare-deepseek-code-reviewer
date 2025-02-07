@@ -13,6 +13,12 @@
         "typecheck": "tsc"
     },
     "dependencies": {
+        "@emotion/cache": "^11.14.0",
+        "@emotion/react": "^11.14.0",
+        "@emotion/server": "^11.11.0",
+        "@emotion/styled": "^11.14.0",
+        "@mui/icons-material": "^6.4.3",
+        "@mui/material": "^6.4.3",
         "@remix-run/cloudflare": "^2.15.3",
         "@remix-run/react": "^2.15.3",
         "@remix-run/server-runtime": "^2.15.3",

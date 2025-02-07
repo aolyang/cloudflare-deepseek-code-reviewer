@@ -1,57 +1,60 @@
-/**
- * By default, Remix will handle generating the HTTP Response for you.
- * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
- * For more information, see https://remix.run/file-conventions/entry.server
- */
+import type { EntryContext } from "@remix-run/cloudflare"
 
-import type { AppLoadContext, EntryContext } from "@remix-run/cloudflare"
-
+import { CacheProvider } from "@emotion/react"
+import createEmotionServer from "@emotion/server/create-instance"
+import { CssBaseline, ThemeProvider } from "@mui/material"
 import { RemixServer } from "@remix-run/react"
-import { isbot } from "isbot"
-import { renderToReadableStream } from "react-dom/server"
+import * as React from "react"
+import * as ReactDOMServer from "react-dom/server"
 
-const ABORT_DELAY = 5000
+import createEmotionCache from "./src/createEmotionCache"
+import theme from "./src/theme"
 
-export default async function handleRequest(
+export default function handleRequest(
     request: Request,
     responseStatusCode: number,
     responseHeaders: Headers,
-    remixContext: EntryContext,
-    // This is ignored so we can keep it in the template for visibility.  Feel
-    // free to delete this parameter in your app if you're not using it!
-
-    loadContext: AppLoadContext
+    remixContext: EntryContext
 ) {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), ABORT_DELAY)
+    const cache = createEmotionCache()
+    const { extractCriticalToChunks } = createEmotionServer(cache)
 
-    const body = await renderToReadableStream(
-        <RemixServer
-            context={remixContext}
-            url={request.url}
-            abortDelay={ABORT_DELAY}
-        />,
-        {
-            signal: controller.signal,
-            onError(error: unknown) {
-                if (!controller.signal.aborted) {
-                    // Log streaming rendering errors from inside the shell
-                    console.error(error)
-                }
-                responseStatusCode = 500
-            }
-        }
-    )
-
-    body.allReady.then(() => clearTimeout(timeoutId))
-
-    if (isbot(request.headers.get("user-agent") || "")) {
-        await body.allReady
+    function MuiRemixServer() {
+        return (
+            <CacheProvider value={cache}>
+                <ThemeProvider theme={theme}>
+                    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                    <CssBaseline />
+                    <RemixServer context={remixContext} url={request.url} />
+                </ThemeProvider>
+            </CacheProvider>
+        )
     }
 
+    // Render the component to a string.
+    const html = ReactDOMServer.renderToString(<MuiRemixServer />)
+
+    // Grab the CSS from emotion
+    const { styles } = extractCriticalToChunks(html)
+
+    let stylesHTML = ""
+
+    styles.forEach(({ key, ids, css }) => {
+        const emotionKey = `${key} ${ids.join(" ")}`
+        const newStyleTag = `<style data-emotion="${emotionKey}">${css}</style>`
+        stylesHTML = `${stylesHTML}${newStyleTag}`
+    })
+
+    // Add the Emotion style tags after the insertion point meta tag
+    const markup = html.replace(
+        /<meta(\s)*name="emotion-insertion-point"(\s)*content="emotion-insertion-point"(\s)*\/>/,
+        `<meta name="emotion-insertion-point" content="emotion-insertion-point"/>${stylesHTML}`
+    )
+
     responseHeaders.set("Content-Type", "text/html")
-    return new Response(body, {
-        headers: responseHeaders,
-        status: responseStatusCode
+
+    return new Response(`<!DOCTYPE html>${markup}`, {
+        status: responseStatusCode,
+        headers: responseHeaders
     })
 }
