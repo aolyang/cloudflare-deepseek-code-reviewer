@@ -1,0 +1,10 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "cloudflare-deepseek-code-reviewer"
+
+main = "src/index.ts"
+# https://developers.cloudflare.com/workers/platform/compatibility-dates
+compatibility_date = "2025-02-10"
+
+[[kv_namespaces]]
+binding = "prompts"
+id = "a3c3e52d9f06410ea81e2cbf07b8ebdc"

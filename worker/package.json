@@ -1,0 +1,16 @@
+{
+    "name": "worker",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy --minify",
+        "lint-type": "eslint ./src/cloudflare-env.d.ts --fix",
+        "cf-typegen": "wrangler types --env-interface CloudflareEnv src/cloudflare-env.d.ts && npm run lint-type"
+    },
+    "dependencies": {
+        "hono": "^4.6.20"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20250109.0",
+        "wrangler": "^3.101.0"
+    }
+}
