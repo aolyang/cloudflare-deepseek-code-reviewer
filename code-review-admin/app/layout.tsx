@@ -2,11 +2,10 @@ import "./globals.css"
 
 import type { Metadata } from "next"
 
-import { ThemeProvider } from "@mui/material/styles"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
 import React from "react"
 
-import theme from "@/src/theme"
+import ClientThemeProvider from "@/src/components/ClientThemeProvider"
 
 export const metadata: Metadata = {
     title: "AI code reviewer",
@@ -18,9 +17,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <html lang="en">
             <body>
                 <AppRouterCacheProvider>
-                    <ThemeProvider theme={theme}>
+                    <ClientThemeProvider>
                         {children}
-                    </ThemeProvider>
+                    </ClientThemeProvider>
                 </AppRouterCacheProvider>
             </body>
         </html>

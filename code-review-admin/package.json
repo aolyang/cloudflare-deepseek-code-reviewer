@@ -7,7 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "proxy_hooks": "smee --url WEBHOOK_PROXY_URL --path /api/github/webhook --port 3000"
+        "proxy_hooks": "smee --url https://smee.io/ZcZi3Sy51OuQ9ZJ --path /api/github/webhook --port 3000"
     },
     "dependencies": {
         "@emotion/cache": "^11.14.0",
