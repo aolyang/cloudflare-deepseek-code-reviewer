@@ -1,6 +1,6 @@
-import GitHubIcon from "@mui/icons-material/GitHub"
-import { Button, Container } from "@mui/material"
+import { Container } from "@mui/material"
 
+import Login2Github from "@/src/components/Login2Github"
 import ToggleTheme from "@/src/components/ToggleTheme"
 
 export default function Home() {
@@ -10,12 +10,7 @@ export default function Home() {
                 Cloudflare AI Code Review
                 <div className={"flex-1"} />
                 <ToggleTheme />
-                <Button
-                    startIcon={<GitHubIcon />}
-                    style={{ backgroundColor: "#347d89", textTransform: "none" }}
-                >
-                    Login to Github
-                </Button>
+                <Login2Github />
             </div>
         </Container>
     )
