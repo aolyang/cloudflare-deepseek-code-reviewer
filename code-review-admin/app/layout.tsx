@@ -3,6 +3,7 @@ import "./globals.css"
 import type { Metadata } from "next"
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
+import { SessionProvider } from "next-auth/react"
 import React from "react"
 
 import ClientThemeProvider from "@/src/components/ClientThemeProvider"
@@ -16,11 +17,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     return (
         <html lang="en">
             <body>
-                <AppRouterCacheProvider>
-                    <ClientThemeProvider>
-                        {children}
-                    </ClientThemeProvider>
-                </AppRouterCacheProvider>
+                <SessionProvider>
+                    <AppRouterCacheProvider>
+                        <ClientThemeProvider>
+                            {children}
+                        </ClientThemeProvider>
+                    </AppRouterCacheProvider>
+                </SessionProvider>
             </body>
         </html>
     )
