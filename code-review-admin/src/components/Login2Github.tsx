@@ -18,7 +18,7 @@ export default function Login2Github() {
                 <Button
                     type={"submit"}
                     startIcon={<GitHubIcon/>}
-                    style={{ backgroundColor: "#1c8139", textTransform: "none" }}
+                    style={{ backgroundColor: "#1c8139", color: "white", textTransform: "none" }}
                 >
                     Login to Github
                 </Button>
