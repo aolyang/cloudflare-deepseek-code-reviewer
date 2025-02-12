@@ -1,3 +1,5 @@
+import "zod-openapi/extend"
+
 import { apiReference } from "@scalar/hono-api-reference"
 import { Hono } from "hono"
 import { openAPISpecs } from "hono-openapi"
@@ -24,19 +26,13 @@ app.get("/schemas", openAPISpecs(app, {
             version: "0.0.1"
         },
         servers: [
-            {
-                url: "http://localhost:8787",
-                description: "local server"
-            },
-            {
-                url: "https://cloudflare-deepseek-code-reviewer.aolyang.workers.dev",
-                description: "production server"
-            }
+            { url: "http://localhost:8787", description: "local server" },
+            { url: "https://cloudflare-deepseek-code-reviewer.aolyang.workers.dev", description: "production server" }
         ]
     }
 }))
 app.get("/", apiReference({
-    theme: "bluePlanet",
+    theme: "deepSpace",
     spec: { url: "/schemas" }
 }))
 export default app
