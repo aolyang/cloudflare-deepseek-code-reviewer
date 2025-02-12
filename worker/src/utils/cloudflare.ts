@@ -1,8 +1,9 @@
+import type { Context } from "hono"
+
 import Cloudflare from "cloudflare"
 
-const cloudflare = new Cloudflare({
-  apiEmail: process.env.CLOUDFLARE_EMAIL,
-  apiKey: process.env.CLOUDFLARE_API_KEY
-})
-
-export default cloudflare
+export const cloudflare = (ctx: Context<{ Bindings: CloudflareEnv }>) =>
+    new Cloudflare({
+        apiEmail: ctx.env.CLOUDFLARE_EMAIL,
+        apiKey: ctx.env.CLOUDFLARE_API_KEY
+    })
