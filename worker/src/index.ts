@@ -26,7 +26,7 @@ app.get("/schemas", openAPISpecs(app, {
             version: "0.0.1"
         },
         servers: [
-            { url: "http://localhost:8787", description: "local server" },
+            { url: "http://127.0.0.1:8787", description: "local server" },
             { url: "https://cloudflare-deepseek-code-reviewer.aolyang.workers.dev", description: "production server" }
         ]
     }
