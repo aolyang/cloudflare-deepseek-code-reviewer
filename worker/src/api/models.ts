@@ -1,9 +1,9 @@
 import { Hono } from "hono"
 import { describeRoute } from "hono-openapi"
-import { validator } from "hono-openapi/zod"
+import { resolver, validator } from "hono-openapi/zod"
 
 import { cloudflare } from "../utils/cloudflare"
-import { ModelQuerySchema, ModelsQuerySchema } from "./models.schema"
+import { ModelQuerySchema, ModelsQuerySchema, ModelsResponseSchema } from "./models.schema"
 
 const models = new Hono<{ Bindings: CloudflareEnv }>()
 
@@ -21,7 +21,16 @@ models.get("/schema",
 
 models.get("/",
     describeRoute({
-        description: "List cloudflare available models"
+        description: "List cloudflare available models",
+        responses: {
+            200: {
+                content: {
+                    "application/json": {
+                        schema: resolver(ModelsResponseSchema)
+                    }
+                }
+            }
+        }
     }),
     validator("query", ModelsQuerySchema),
     async (c) => {

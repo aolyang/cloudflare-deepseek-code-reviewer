@@ -12,11 +12,10 @@ import auth from "./middleware/auth"
 const app = new Hono<{ Bindings: CloudflareEnv }>()
 
 app.route("/", auth)
+app.route("/health", health)
 
 app.route("/api/code-review", codeReview)
-
 app.route("/api/public/models", models)
-app.route("/api/public/health", health)
 
 app.get("/schemas", openAPISpecs(app, {
     documentation: {

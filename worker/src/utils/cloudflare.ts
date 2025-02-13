@@ -2,8 +2,6 @@ import type { Context } from "hono"
 
 import Cloudflare from "cloudflare"
 
-export const recommendedModel = "deepseek-r1-distill-qwen-32b"
-
 export const cloudflare = (
     ctx: Context<{ Bindings: CloudflareEnv }>
 ) =>
