@@ -1,5 +1,4 @@
 "use client"
-
 import { Button } from "@mui/material"
 import { useEffect, useState } from "react"
 
@@ -12,10 +11,13 @@ const PromptList = () => {
     const [prompts, setPrompts] = useState<Prompt[]>([])
     const [open, setOpen] = useState(false)
 
-    useEffect(() => {
+    const refreshList = () => {
         getPrompts().then(result => {
             setPrompts(result.prompts)
         })
+    }
+    useEffect(() => {
+        refreshList()
     }, [])
 
     const handleOpen = () => setOpen(true)
@@ -25,9 +27,9 @@ const PromptList = () => {
         <div>
             <Button onClick={handleOpen}>Add Prompt</Button>
             {prompts.map((prompt) => (
-                <PromptCard key={prompt.name} prompt={prompt}/>
+                <PromptCard key={prompt.name} prompt={prompt} onFetch={refreshList}/>
             ))}
-            <ModifyPromptDialog open={open} onClose={handleClose} />
+            <ModifyPromptDialog open={open} onClose={handleClose} onFetch={refreshList}/>
         </div>
     )
 }

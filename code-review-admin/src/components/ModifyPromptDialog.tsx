@@ -20,12 +20,15 @@ import { createPrompt, updatePrompt } from "@/src/actions/prompts"
 import type { Prompt } from "@/src/utils/prompts"
 
 type ModifyPromptDialogProps = {
+    prompt?: Prompt
     open: boolean
     onClose: () => void
-    prompt?: Prompt
+    onFetch: () => void
 }
 
-const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) => {
+const ModifyPromptDialog = ({
+    open, onClose, onFetch, prompt
+}: ModifyPromptDialogProps) => {
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
             name: prompt?.name || "",
@@ -57,6 +60,7 @@ const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) 
         } else {
             await createPrompt(data)
         }
+        onFetch()
         onClose()
     }
 

@@ -7,18 +7,14 @@ import { useSession } from "next-auth/react"
 import { useState } from "react"
 
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
-
-type Prompt = {
-    name: string
-    description: string
-    messages: { role: string; content: string }[]
-}
+import type { Prompt } from "@/src/utils/prompts"
 
 type PromptCardProps = {
     prompt: Prompt
+    onFetch: () => void
 }
 
-const PromptCard = ({ prompt }: PromptCardProps) => {
+const PromptCard = ({ prompt, onFetch }: PromptCardProps) => {
     const { data: session } = useSession()
     const [open, setOpen] = useState(false)
 
@@ -28,6 +24,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     return (
         <Card>
             <CardContent className={"relative"}>
+                <ModifyPromptDialog open={open} onClose={handleClose} prompt={prompt} onFetch={onFetch}/>
                 {session?.user ?
                     <div className={"absolute right-0 top-0"}>
                         <IconButton color={"error"}><DeleteForeverIcon /></IconButton>
@@ -58,7 +55,6 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
                     </Typography>
                 ))}
             </CardContent>
-            <ModifyPromptDialog open={open} onClose={handleClose} prompt={prompt} />
         </Card>
     )
 }
