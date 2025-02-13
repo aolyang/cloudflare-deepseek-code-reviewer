@@ -1,8 +1,8 @@
 import { Container } from "@mui/material"
 
 import Login2Github from "@/src/components/Login2Github"
-import ToggleTheme from "@/src/components/ToggleTheme"
 import PromptList from "@/src/components/PromptList"
+import ToggleTheme from "@/src/components/ToggleTheme"
 
 export default function Home() {
     return (
