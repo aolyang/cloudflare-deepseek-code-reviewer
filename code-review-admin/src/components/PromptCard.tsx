@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 import { useState } from "react"
 
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
+import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
 import type { Prompt } from "@/src/utils/prompts"
 
 type PromptCardProps = {
@@ -17,6 +18,7 @@ type PromptCardProps = {
 const PromptCard = ({ prompt, onFetch }: PromptCardProps) => {
     const { data: session } = useSession()
     const [open, setOpen] = useState(false)
+    const [confirmOpen, setConfirmOpen] = useState(false)
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
@@ -25,9 +27,15 @@ const PromptCard = ({ prompt, onFetch }: PromptCardProps) => {
         <Card>
             <CardContent className={"relative"}>
                 <ModifyPromptDialog open={open} onClose={handleClose} prompt={prompt} onFetch={onFetch}/>
+                <ConfirmDeletePromptDialog
+                    open={confirmOpen}
+                    onClose={() => setConfirmOpen(false)}
+                    onFetch={onFetch}
+                    prompt={prompt}
+                />
                 {session?.user ?
                     <div className={"absolute right-0 top-0"}>
-                        <IconButton color={"error"}><DeleteForeverIcon /></IconButton>
+                        <IconButton color={"error"} onClick={() => setConfirmOpen(true)}><DeleteForeverIcon /></IconButton>
                         <IconButton onClick={handleOpen}><SettingsIcon/></IconButton>
                     </div>
                     : null

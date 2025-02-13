@@ -13,11 +13,12 @@ import {
     Select,
     TextField
 } from "@mui/material"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import { createPrompt, updatePrompt } from "@/src/actions/prompts"
 import type { Prompt } from "@/src/utils/prompts"
+import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
 
 type ModifyPromptDialogProps = {
     prompt?: Prompt
@@ -63,6 +64,8 @@ const ModifyPromptDialog = ({
         onFetch()
         onClose()
     }
+
+    const [confirmOpen, setConfirmOpen] = useState(false)
 
     return (
         <Dialog open={open} onClose={onClose}>
@@ -121,11 +124,22 @@ const ModifyPromptDialog = ({
                 </Button>
             </DialogContent>
             <DialogActions>
+                {prompt && (
+                    <Button onClick={() => setConfirmOpen(true)} color="error">
+                        Delete
+                    </Button>
+                )}
                 <Button onClick={onClose} color={"inherit"}>Cancel</Button>
                 <Button onClick={handleSubmit(onSubmit)} color="primary">
                     {prompt ? "Update" : "Add"}
                 </Button>
             </DialogActions>
+            <ConfirmDeletePromptDialog
+                open={confirmOpen}
+                onClose={() => setConfirmOpen(false)}
+                onFetch={onFetch}
+                prompt={prompt}
+            />
         </Dialog>
     )
 }
