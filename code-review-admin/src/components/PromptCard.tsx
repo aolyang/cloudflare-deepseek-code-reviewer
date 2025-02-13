@@ -6,8 +6,8 @@ import { Card, CardContent, IconButton, Typography } from "@mui/material"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 
-import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
 import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
+import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
 import type { Prompt } from "@/src/utils/prompts"
 
 type PromptCardProps = {
@@ -18,24 +18,24 @@ type PromptCardProps = {
 const PromptCard = ({ prompt, onFetch }: PromptCardProps) => {
     const { data: session } = useSession()
     const [open, setOpen] = useState(false)
-    const [confirmOpen, setConfirmOpen] = useState(false)
+    const [deleteOpen, setDeleteOpen] = useState(false)
 
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
-
+    const handleDeleteOpenClose = () => setDeleteOpen(false)
     return (
         <Card>
             <CardContent className={"relative"}>
                 <ModifyPromptDialog open={open} onClose={handleClose} prompt={prompt} onFetch={onFetch}/>
                 <ConfirmDeletePromptDialog
-                    open={confirmOpen}
-                    onClose={() => setConfirmOpen(false)}
+                    open={deleteOpen}
+                    onClose={handleDeleteOpenClose}
                     onFetch={onFetch}
                     prompt={prompt}
                 />
                 {session?.user ?
                     <div className={"absolute right-0 top-0"}>
-                        <IconButton color={"error"} onClick={() => setConfirmOpen(true)}><DeleteForeverIcon /></IconButton>
+                        <IconButton color={"error"} onClick={() => setDeleteOpen(true)}><DeleteForeverIcon /></IconButton>
                         <IconButton onClick={handleOpen}><SettingsIcon/></IconButton>
                     </div>
                     : null

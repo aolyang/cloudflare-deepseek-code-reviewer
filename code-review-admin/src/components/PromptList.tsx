@@ -24,12 +24,14 @@ const PromptList = () => {
     const handleClose = () => setOpen(false)
 
     return (
-        <div>
+        <div style={{ height: "calc(100% - 40px)" }}>
             <Button onClick={handleOpen}>Add Prompt</Button>
-            {prompts.map((prompt) => (
-                <PromptCard key={prompt.name} prompt={prompt} onFetch={refreshList}/>
-            ))}
-            <ModifyPromptDialog open={open} onClose={handleClose} onFetch={refreshList}/>
+            <div className={"flex flex-col gap-4 overflow-y-auto"} style={{ height: "calc(100% - 31px)" }}>
+                {prompts.map((prompt) => (
+                    <PromptCard key={prompt.name} prompt={prompt} onFetch={refreshList} />
+                ))}
+                <ModifyPromptDialog open={open} onClose={handleClose} onFetch={refreshList} />
+            </div>
         </div>
     )
 }

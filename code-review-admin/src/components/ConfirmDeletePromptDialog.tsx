@@ -1,4 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
+
 import { deletePrompt } from "@/src/actions/prompts"
 import type { Prompt } from "@/src/utils/prompts"
 
@@ -24,7 +25,7 @@ const ConfirmDeletePromptDialog = ({
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>Confirm Delete</DialogTitle>
             <DialogContent>
-                Are you sure you want to delete the prompt "{prompt?.name}"?
+                Are you sure you want to delete the prompt &#34;{prompt?.name}&#34;?
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="inherit">Cancel</Button>
