@@ -17,10 +17,11 @@ app.route("/health", health)
 app.route("/api/code-review", codeReview)
 app.route("/api/public/models", models)
 
+const appName = "Cloudflare AI code review worker"
 app.get("/schemas", openAPISpecs(app, {
     documentation: {
         info: {
-            title: "Cloudflare AI code review worker OpenAPI docs",
+            title: `${appName} schemas`,
             description: "Code review worker",
             version: "0.0.1"
         },
@@ -32,6 +33,7 @@ app.get("/schemas", openAPISpecs(app, {
 }))
 app.get("/", apiReference({
     theme: "deepSpace",
+    pageTitle: `${appName} docs`,
     spec: { url: "/schemas" }
 }))
 export default app

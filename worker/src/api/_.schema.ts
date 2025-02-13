@@ -1,8 +1,8 @@
 import { z } from "zod"
 
 export const pageQuerySchema = z.object({
-    page:     z.number().optional().openapi({ description: "Page number", example: 1 }),
-    per_page: z.number().optional().openapi({ description: "Number of items per page", example: 20 })
+    page:     z.coerce.number().optional().openapi({ description: "Page number", example: 1 }),
+    per_page: z.coerce.number().optional().openapi({ description: "Number of items per page", example: 20 })
 })
 
 export const pageResponseSchema = z.object({

@@ -32,11 +32,9 @@ export const ModelQuerySchema = z.object({
     model: z.string().openapi({ description: "Model name", example: recommendedModel.name })
 })
 
-export const ModelsQuerySchema = z
-    .object({
-        search: z.string().optional().openapi({ description: "Search query", example: recommendedModel.name })
-    })
-    .merge(pageQuerySchema)
+export const ModelsQuerySchema = z.object({
+    search: z.string().optional().openapi({ description: "Search query", example: recommendedModel.name })
+}).merge(pageQuerySchema)
 
 export const ModelsResponseSchema = z.object({
     models: z.array(ModelSchema),
