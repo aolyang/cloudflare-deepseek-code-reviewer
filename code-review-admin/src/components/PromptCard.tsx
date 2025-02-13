@@ -4,6 +4,9 @@ import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest"
 import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates"
 import { Card, CardContent, IconButton, Typography } from "@mui/material"
 import { useSession } from "next-auth/react"
+import { useState } from "react"
+
+import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
 
 type Prompt = {
     name: string
@@ -17,13 +20,18 @@ type PromptCardProps = {
 
 const PromptCard = ({ prompt }: PromptCardProps) => {
     const { data: session } = useSession()
+    const [open, setOpen] = useState(false)
+
+    const handleOpen = () => setOpen(true)
+    const handleClose = () => setOpen(false)
+
     return (
         <Card>
             <CardContent className={"relative"}>
                 {session?.user ?
                     <div className={"absolute right-0 top-0"}>
                         <IconButton color={"error"}><DeleteForeverIcon /></IconButton>
-                        <IconButton><SettingsIcon/></IconButton>
+                        <IconButton onClick={handleOpen}><SettingsIcon/></IconButton>
                     </div>
                     : null
                 }
@@ -50,6 +58,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
                     </Typography>
                 ))}
             </CardContent>
+            <ModifyPromptDialog open={open} onClose={handleClose} prompt={prompt} />
         </Card>
     )
 }
