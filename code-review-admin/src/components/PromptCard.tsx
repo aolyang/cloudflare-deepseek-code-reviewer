@@ -1,3 +1,4 @@
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import SettingsIcon from "@mui/icons-material/Settings"
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest"
 import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates"
@@ -21,8 +22,10 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
             <CardContent className={"relative"}>
                 {session?.user ?
                     <div className={"absolute right-0 top-0"}>
+                        <IconButton color={"error"}><DeleteForeverIcon /></IconButton>
                         <IconButton><SettingsIcon/></IconButton>
-                    </div> : null
+                    </div>
+                    : null
                 }
                 <Typography variant="h5" component="div">/{prompt.name}</Typography>
                 <Typography variant="body2" color="text.secondary">{prompt.description}</Typography>
