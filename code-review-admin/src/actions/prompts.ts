@@ -23,3 +23,10 @@ export const updatePrompt = async (prompt: Partial<Prompt>) => {
         body: JSON.stringify(prompt)
     }).then(res => res.json())
 }
+
+export const deletePrompt = async (promptName: string) => {
+    return fetch(`${process.env.API_URL}/api/prompts/${promptName}`, {
+        method: "DELETE",
+        headers: commonHeaders
+    }).then(res => res.json())
+}
