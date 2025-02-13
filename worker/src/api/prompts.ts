@@ -1,119 +1,144 @@
-import { Hono } from "hono"
+import type { Prompt} from "./prompts.schema"
+
 import { zValidator } from "@hono/zod-validator"
-import { promptSchema } from "./prompts.schema"
-import { v4 as uuidv4 } from 'uuid'
+import { Hono } from "hono"
 import { describeRoute } from "hono-openapi"
 import { resolver } from "hono-openapi/zod"
 
+import { ResponsePromptsSchema } from "./prompts.schema"
+import { PromptSchema } from "./prompts.schema"
+
 const prompts = new Hono<{ Bindings: CloudflareEnv }>()
 
-prompts.get("/api/prompts/:key",
-  describeRoute({
-    description: "Get a prompt by key",
-    responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: resolver(promptSchema)
-          }
+const KVValueLimit = 25 * 1024 * 1024 // MB
+
+prompts.get("/",
+    describeRoute({
+        description: "Get all prompts",
+        responses: {
+            200: {
+                content: {
+                    "application/json": {
+                        schema: ResponsePromptsSchema
+                    }
+                }
+            }
         }
-      }
+    }),
+    async (c) => {
+        const value = await c.env.prompts.list()
+        const prompts = await Promise.all(value.keys.map(async (item) => {
+            const prompt = await c.env.prompts.get(item.name)
+            return prompt && JSON.parse(prompt)
+        })).then((prompts) => prompts.filter(Boolean))
+        return c.json({ prompts })
     }
-  }),
-  async (c) => {
-    const key = c.req.param("key")
-    const prompt = await c.env.prompts.get(key)
-    if (!prompt) {
-      return c.json({ error: "Prompt not found" }, 404)
-    }
-    return c.json(JSON.parse(prompt))
-  }
 )
 
-prompts.put("/api/prompts/:key",
-  describeRoute({
-    description: "Update a prompt by key",
-    requestBody: {
-      content: {
-        "application/json": {
-          schema: resolver(promptSchema)
+prompts.get("/:key",
+    describeRoute({
+        description: "Get prompt by key",
+        responses: {
+            200: {
+                content: {
+                    "application/json": {
+                        schema: resolver(PromptSchema)
+                    }
+                }
+            }
         }
-      }
-    },
-    responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: resolver(promptSchema)
-          }
-        }
-      }
+    }),
+    async (c) => {
+        const key = c.req.param("key")
+        const prompt = await c.env.prompts.get(key)
+
+        if (!prompt) return c.json({ error: "Prompt not found" }, 404)
+        return c.json({ prompt: JSON.parse(prompt) })
     }
-  }),
-  zValidator("json", promptSchema),
-  async (c) => {
-    const key = c.req.param("key")
-    const prompt = await c.req.json()
-    const promptSize = new TextEncoder().encode(JSON.stringify(prompt)).length
-    if (promptSize > 25 * 1024 * 1024) {
-      return c.json({ error: "Prompt size exceeds 25MB limit" }, 400)
-    }
-    await c.env.prompts.put(key, JSON.stringify(prompt))
-    return c.json(prompt)
-  }
 )
 
-prompts.post("/api/prompts",
-  describeRoute({
-    description: "Create a new prompt",
-    requestBody: {
-      content: {
-        "application/json": {
-          schema: resolver(promptSchema)
+prompts.put("/:key",
+    describeRoute({
+        description: "create a new prompt",
+        requestBody: {
+            content: {
+                "application/json": {
+                    schema: resolver(PromptSchema)
+                }
+            }
+        },
+        responses: {
+            200: {
+                content: {
+                    "application/json": {
+                        schema: resolver(PromptSchema)
+                    }
+                }
+            }
         }
-      }
-    },
-    responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: resolver(promptSchema)
-          }
+    }),
+    zValidator("json", PromptSchema),
+    async (c) => {
+        const key = c.req.param("key")
+        const prompt = await c.req.json()
+        const promptStr = JSON.stringify(prompt)
+
+        if (new TextEncoder().encode(promptStr).length > KVValueLimit) {
+            return c.json({ error: "Prompt size exceeds 25MB limit" }, 400)
         }
-      }
+        await c.env.prompts.put(key, JSON.stringify(prompt))
+        return c.json({ prompt })
     }
-  }),
-  zValidator("json", promptSchema),
-  async (c) => {
-    const key = uuidv4()
-    const prompt = await c.req.json()
-    const promptSize = new TextEncoder().encode(JSON.stringify(prompt)).length
-    if (promptSize > 25 * 1024 * 1024) {
-      return c.json({ error: "Prompt size exceeds 25MB limit" }, 400)
-    }
-    await c.env.prompts.put(key, JSON.stringify(prompt))
-    return c.json({ success: true, key, prompt })
-  }
 )
 
-prompts.delete("/api/prompts/:key",
-  describeRoute({
-    description: "Delete a prompt by key",
-    responses: {
-      200: {
-        content: {
-          "application/json": {
-            schema: resolver(promptSchema)
-          }
+prompts.post("/:key",
+    describeRoute({
+        description: "Update prompt",
+        requestBody: {
+            content: {
+                "application/json": {
+                    schema: resolver(PromptSchema.partial())
+                }
+            }
+        },
+        responses: {
+            200: {
+                content: {
+                    "application/json": {
+                        schema: resolver(PromptSchema)
+                    }
+                }
+            }
         }
-      }
+    }),
+    zValidator("json", PromptSchema.partial()),
+    async (c) => {
+        const key = c.req.param("key")
+
+        const _prompt = await c.env.prompts.get(key)
+        if (!_prompt) return c.json({ error: `Prompt [${key}] not found` }, 404)
+
+        const prompt = await c.req.json() as Partial<Prompt>
+        const newPrompt = { ...JSON.parse(_prompt), ...prompt }
+        const promptStr = JSON.stringify(newPrompt)
+
+        if (new TextEncoder().encode(promptStr).length > KVValueLimit) {
+            return c.json({ error: "Prompt size exceeds 25MB limit" }, 400)
+        }
+        await c.env.prompts.put(key, promptStr)
+        return c.json({ success: true, key, prompt: newPrompt })
     }
-  }),
-  async (c) => {
-    const key = c.req.param("key")
-    await c.env.prompts.delete(key)
-    return c.json({ success: true })
-  }
+)
+
+prompts.delete("/:key",
+    describeRoute({
+        description: "Delete a prompt by key"
+    }),
+    async (c) => {
+        const key = c.req.param("key")
+        await c.env.prompts.delete(key)
+        return c.json({ success: true })
+    }
 )
 
 export default prompts
