@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { recommendedModel } from "../utils/cloudflare"
 import { pageQuerySchema, pageResponseSchema } from "./_.schema"
 
 export const ModelSchema = z.object({
@@ -12,12 +13,12 @@ export const ModelSchema = z.object({
 })
 
 export const ModelQuerySchema = z.object({
-    model: z.string().openapi({ description: "Model name", example: "deepseek-coder-6.7b-instruct-awq" })
+    model: z.string().openapi({ description: "Model name", example: recommendedModel })
 })
 
 export const ModelsQuerySchema = z
     .object({
-        search: z.string().optional().openapi({ description: "Search query", example: "deepseek-coder-6.7b-instruct-awq" })
+        search: z.string().optional().openapi({ description: "Search query", example: recommendedModel })
     })
     .merge(pageQuerySchema)
 
