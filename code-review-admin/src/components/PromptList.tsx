@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { Button } from "@mui/material"
+import { useEffect, useState } from "react"
 
 import { getPrompts } from "@/src/actions/prompts"
-import PromptCard from "@/src/components/PromptCard"
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
+import PromptCard from "@/src/components/PromptCard"
 import type { Prompt } from "@/src/utils/prompts"
 
 const PromptList = () => {

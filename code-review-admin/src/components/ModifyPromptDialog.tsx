@@ -1,8 +1,20 @@
-import { useState, useEffect } from "react"
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, IconButton, Select, MenuItem, FormControl, InputLabel } from "@mui/material"
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
-import { useForm, useFieldArray, Controller } from "react-hook-form"
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField
+} from "@mui/material"
+import { useEffect } from "react"
+import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import { createPrompt, updatePrompt } from "@/src/actions/prompts"
 import type { Prompt } from "@/src/utils/prompts"
@@ -39,7 +51,7 @@ const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) 
         }
     }, [prompt, reset])
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: Prompt) => {
         if (prompt) {
             await updatePrompt(data)
         } else {
@@ -56,36 +68,21 @@ const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) 
                     name="name"
                     control={control}
                     render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label="Name"
-                            fullWidth
-                            margin="normal"
-                        />
+                        <TextField{...field} label="Name" fullWidth margin="normal" />
                     )}
                 />
                 <Controller
                     name="description"
                     control={control}
                     render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label="Description"
-                            fullWidth
-                            margin="normal"
-                        />
+                        <TextField{...field} label="Description" fullWidth margin="normal" />
                     )}
                 />
                 <Controller
                     name="model"
                     control={control}
                     render={({ field }) => (
-                        <TextField
-                            {...field}
-                            label="Model"
-                            fullWidth
-                            margin="normal"
-                        />
+                        <TextField{...field} label="Model" fullWidth margin="normal" />
                     )}
                 />
                 {fields.map((field, index) => (
@@ -94,11 +91,9 @@ const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) 
                             name={`messages.${index}.role`}
                             control={control}
                             render={({ field }) => (
-                                <FormControl fullWidth margin="normal">
+                                <FormControl style={{ minWidth: 140 }} margin="normal">
                                     <InputLabel>Role</InputLabel>
-                                    <Select
-                                        {...field}
-                                    >
+                                    <Select{...field}>
                                         <MenuItem value="system">System</MenuItem>
                                         <MenuItem value="user">User</MenuItem>
                                     </Select>
@@ -109,12 +104,7 @@ const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) 
                             name={`messages.${index}.content`}
                             control={control}
                             render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    label="Content"
-                                    fullWidth
-                                    margin="normal"
-                                />
+                                <TextField{...field} label="Content" multiline fullWidth maxRows={3} margin="normal" />
                             )}
                         />
                         <IconButton onClick={() => remove(index)}>
@@ -122,12 +112,12 @@ const ModifyPromptDialog = ({ open, onClose, prompt }: ModifyPromptDialogProps) 
                         </IconButton>
                     </div>
                 ))}
-                <Button onClick={() => append({ role: "system", content: "" })} startIcon={<AddIcon />}>
+                <Button onClick={() => append({ role: "user", content: "" })} startIcon={<AddIcon />}>
                     Add Message
                 </Button>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={onClose} color={"inherit"}>Cancel</Button>
                 <Button onClick={handleSubmit(onSubmit)} color="primary">
                     {prompt ? "Update" : "Add"}
                 </Button>

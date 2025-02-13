@@ -27,6 +27,16 @@ const theme = createTheme({
                 disableElevation: true,
                 size: "small"
             }
+        },
+        MuiTextField: {
+            defaultProps: {
+                size: "small"
+            }
+        },
+        MuiSelect: {
+            defaultProps: {
+                size: "small"
+            }
         }
     }
 })
