@@ -2,6 +2,7 @@ import { Container } from "@mui/material"
 
 import Login2Github from "@/src/components/Login2Github"
 import ToggleTheme from "@/src/components/ToggleTheme"
+import PromptList from "@/src/components/PromptList"
 
 export default function Home() {
     return (
@@ -12,6 +13,7 @@ export default function Home() {
                 <ToggleTheme />
                 <Login2Github />
             </div>
+            <PromptList />
         </Container>
     )
 }
