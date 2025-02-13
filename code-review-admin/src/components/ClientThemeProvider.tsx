@@ -6,7 +6,11 @@ import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
 import { createTheme } from "@mui/material/styles"
 
-const storageMode = (localStorage?.getItem("mui-mode") as "light" | "dark" | "system" | null) || "system"
+let storageMode: "light" | "dark" | "system" = "system"
+
+if (typeof document !== "undefined" && typeof localStorage !== "undefined") {
+    storageMode = localStorage.getItem("mui-mode") as "light" || "system"
+}
 
 const theme = createTheme({
     colorSchemes: { light: true, dark: true },
@@ -29,7 +33,7 @@ const theme = createTheme({
 
 export default function ClientThemeProvider({ children }: { children: ReactNode }) {
     return <ThemeProvider theme={theme}>
-        <CssBaseline />
+        <CssBaseline/>
         {children}
     </ThemeProvider>
 }
