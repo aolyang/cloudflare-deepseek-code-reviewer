@@ -6,8 +6,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint",
-        "proxy_hooks": "smee --url https://smee.io/ZcZi3Sy51OuQ9ZJ --path /api/github/webhook --port 3000"
+        "lint": "next lint"
     },
     "dependencies": {
         "@emotion/cache": "^11.14.0",
@@ -28,7 +27,6 @@
         "@types/react-dom": "^19",
         "eslint-config-next": "15.1.6",
         "postcss": "^8",
-        "smee-client": "^2.0.4",
         "tailwindcss": "^3.4.1",
         "typescript": "^5"
     }

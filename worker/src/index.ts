@@ -4,7 +4,7 @@ import { apiReference } from "@scalar/hono-api-reference"
 import { Hono } from "hono"
 import { openAPISpecs } from "hono-openapi"
 
-import codeReview from "./api/code-review"
+import github from "./api/github"
 import health from "./api/health"
 import models from "./api/models"
 import prompts from "./api/prompts"
@@ -19,7 +19,7 @@ app.route("/health", health)
 app.route("/api/public/models", models)
 app.route("/api/public/tasks", tasks)
 app.route("/api/prompts", prompts)
-app.route("/api/code-review", codeReview)
+app.route("/api/github", github)
 
 const appName = "Cloudflare AI code review worker"
 
