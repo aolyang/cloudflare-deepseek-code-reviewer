@@ -41,6 +41,7 @@ const ModifyPromptDialog = ({
         defaultValues: defaultValue(prompt)
     })
 
+    // partial prompt "{ name }" can be set in ModelCard
     const isUpdate = useMemo(() => Boolean(prompt?.name), [prompt?.name])
 
     const { fields, append, remove } = useFieldArray({
@@ -55,7 +56,7 @@ const ModifyPromptDialog = ({
     }, [prompt, reset])
 
     const onSubmit = async (data: Prompt) => {
-        if (prompt) {
+        if (isUpdate) {
             await updatePrompt(data)
         } else {
             await createPrompt(data)
@@ -123,7 +124,7 @@ const ModifyPromptDialog = ({
             <DialogActions>
                 <Button onClick={onClose} color={"inherit"}>Cancel</Button>
                 <Button onClick={handleSubmit(onSubmit)} color="primary">
-                    {prompt ? "Update" : "Add"}
+                    {isUpdate ? "Update" : "Add"}
                 </Button>
             </DialogActions>
         </Dialog>

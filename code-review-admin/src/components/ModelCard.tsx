@@ -23,20 +23,21 @@ export default function ModelCard({ model, onModelTaskNameClick }: ModelCardProp
             <CardContent>
                 <Typography variant="h6" component="div">{model.name}</Typography>
                 <Tooltip title={model.task.description} placement={"bottom-start"}>
-                    <Chip label={model.task.name} size={"small"} onClick={onModelTaskNameClick}/>
+                    <Chip label={model.task.name} size={"small"} onClick={onModelTaskNameClick} />
                 </Tooltip>
                 <Typography variant="body2" color="text.secondary">{model.description}</Typography>
                 {session?.user && (
-                    <>
-                        <IconButton onClick={handleOpen} style={{ position: "absolute", top: 0, right: 0 }}>
-                            <AddIcon/>
-                        </IconButton>
-                        <ModifyPromptDialog
-                            open={open}
-                            onClose={handleClose}
-                            onFetch={() => {}}
-                            prompt={{ model: model.name }}/>
-                    </>
+                    <IconButton onClick={handleOpen} style={{ position: "absolute", top: 0, right: 0 }}>
+                        <AddIcon />
+                    </IconButton>
+                )}
+                {open && session?.user && (
+                    <ModifyPromptDialog
+                        open={open}
+                        onClose={handleClose}
+                        onFetch={() => {}}
+                        prompt={{ model: model.name }}
+                    />
                 )}
             </CardContent>
         </Card>
