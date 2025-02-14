@@ -1,7 +1,7 @@
 {
     "name": "worker",
     "scripts": {
-        "dev": "wrangler dev",
+        "dev": "wrangler dev --ip localhost",
         "deploy": "wrangler deploy --minify",
         "lint-type": "eslint ./src/cloudflare-env.d.ts --fix",
         "cf-typegen": "wrangler types --env-interface CloudflareEnv src/cloudflare-env.d.ts && npm run lint-type"
