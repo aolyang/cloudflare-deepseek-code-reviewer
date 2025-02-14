@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     <AppRouterCacheProvider>
                         <ClientThemeProvider>
                             <Container className={"size-full"} maxWidth={"sm"}>
-                                <div className={"flex items-center h-[56px]"}>
+                                <div className={"flex items-center gap-2 h-[56px]"}>
                                     Cloudflare AI Code Review
                                     <div className={"flex-1"}/>
                                     <nav className={"flex gap-2 underline"}>
