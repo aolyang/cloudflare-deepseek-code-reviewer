@@ -4,11 +4,12 @@ import type { KeyboardEventHandler} from "react"
 
 import SearchIcon from "@mui/icons-material/Search"
 import { IconButton } from "@mui/material"
-import { FormControl, InputLabel, MenuItem, Pagination, Select, TextField } from "@mui/material"
+import { TextField } from "@mui/material"
 import { useEffect, useState } from "react"
 
 import { getModels } from "@/src/actions/models"
 import ModelCard from "@/src/components/ModelCard"
+import TaskCategorySelect from "@/src/components/TaskCategorySelect"
 import type { Model } from "@/src/utils/models"
 
 export default function ModelsList() {
@@ -31,31 +32,13 @@ export default function ModelsList() {
         if (event.key === "Enter") fireSearch()
     }
 
-    const handleTaskNameChange = (event: SelectChangeEvent) => {
-        setTaskName(event.target.value)
-    }
-
     const handlePageChange = (_: unknown, value: number) => {
         setPage(value)
     }
     return (
         <>
             <div className={"flex items-center gap-2"}>
-                <FormControl variant={"outlined"} size={"small"}>
-                    <InputLabel>Category</InputLabel>
-                    <Select
-                        variant={"outlined"}
-                        value={taskName}
-                        label={"Category"}
-                        size={"small"}
-                        onChange={handleTaskNameChange}
-                        style={{ width: "200px" }}
-                    >
-                        <MenuItem value=""><em>None</em></MenuItem>
-                        <MenuItem value="task1">Task 1</MenuItem>
-                        <MenuItem value="task2">Task 2</MenuItem>
-                    </Select>
-                </FormControl>
+                <TaskCategorySelect taskName={taskName} onTaskNameSelect={setTaskName} />
                 <TextField
                     label="Press Enter to search"
                     value={search}
