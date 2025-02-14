@@ -8,6 +8,7 @@ import codeReview from "./api/code-review"
 import health from "./api/health"
 import models from "./api/models"
 import prompts from "./api/prompts"
+import tasks from "./api/tasks"
 import auth from "./middleware/auth"
 
 const app = new Hono<{ Bindings: CloudflareEnv }>()
@@ -15,9 +16,10 @@ const app = new Hono<{ Bindings: CloudflareEnv }>()
 app.route("/", auth)
 app.route("/health", health)
 
-app.route("/api/code-review", codeReview)
 app.route("/api/public/models", models)
+app.route("/api/public/tasks", tasks)
 app.route("/api/prompts", prompts)
+app.route("/api/code-review", codeReview)
 
 const appName = "Cloudflare AI code review worker"
 
