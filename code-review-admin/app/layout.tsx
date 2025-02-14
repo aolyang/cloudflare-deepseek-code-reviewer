@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-            <body>
+            <body className={"size-full"}>
                 <SessionProvider>
                     <AppRouterCacheProvider>
                         <ClientThemeProvider>
-                            <Container maxWidth={"sm"}>
+                            <Container className={"size-full"} maxWidth={"sm"}>
                                 <div className={"flex items-center"}>
                                     Cloudflare AI Code Review
                                     <div className={"flex-1"}/>
@@ -35,7 +35,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                                     <ToggleTheme/>
                                     <Login2Github/>
                                 </div>
-                                {children}
+                                <div style={{ height: "calc(100% - 40px)"}}>
+                                    {children}
+                                </div>
                             </Container>
                         </ClientThemeProvider>
                     </AppRouterCacheProvider>
