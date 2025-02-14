@@ -26,7 +26,7 @@ const PromptList = () => {
     return (
         <div style={{ height: "calc(100% - 40px)" }}>
             <Button onClick={handleOpen}>Add Prompt</Button>
-            <div className={"flex flex-col gap-4 p-1 -m-1 overflow-y-auto"} style={{ height: "calc(100% - 31px)" }}>
+            <div className={"flex flex-col gap-4 px-1 -m-1 py-2 overflow-y-auto"} style={{ height: "calc(100% - 31px)" }}>
                 {prompts.map((prompt) => (
                     <PromptCard key={prompt.name} prompt={prompt} onFetch={refreshList} />
                 ))}

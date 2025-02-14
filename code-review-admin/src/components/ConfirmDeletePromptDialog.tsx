@@ -1,4 +1,13 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from "@mui/material"
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid2 as Grid,
+    Typography
+} from "@mui/material"
+import React from "react"
 
 import { deletePrompt } from "@/src/actions/prompts"
 import type { Prompt } from "@/src/utils/prompts"
@@ -23,16 +32,24 @@ const ConfirmDeletePromptDialog = ({
 
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogTitle>
+                Confirm Delete
+                {prompt?.name && <span className={"ml-2 text-red-700 dark:text-red-500"}>/{prompt.name}</span>}
+                ?
+            </DialogTitle>
             <DialogContent>
                 <Typography>Are you sure you want to delete the prompt &#34;{prompt?.name}&#34;?</Typography>
-                <DialogContentText>
-                    <Typography>command: /{prompt?.name}</Typography>
-                    <Typography>model: {prompt?.model}</Typography>
+                <p className={"text-[18px] font-medium mt-1"}>model</p>
+                <Typography color={"text.secondary"}>{prompt?.model}</Typography>
+                <p className={"text-[18px] font-medium mt-1"}>messages</p>
+                <Grid container columnSpacing={2}>
                     {prompt?.messages.map((message, index) => (
-                        <Typography key={index}>{message.role} {"{  " + message.content + "  }"}</Typography>
+                        <React.Fragment key={index}>
+                            <Grid size={2}>{message.role}</Grid>
+                            <Grid size={10} color={"text.secondary"}>{message.content}</Grid>
+                        </React.Fragment>
                     ))}
-                </DialogContentText>
+                </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="inherit">Cancel</Button>
