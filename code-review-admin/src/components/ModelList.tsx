@@ -59,7 +59,7 @@ export default function ModelsList() {
             >
                 {models.map((model) => (
                     <div className={"mb-4"} key={model.id}>
-                        <ModelCard model={model} onModelTaskSelect={(value) => setTaskName(value)}/>
+                        <ModelCard model={model} onModelTaskNameClick={() => setTaskName(model.task.name)}/>
                     </div>
                 ))}
             </div>

@@ -13,31 +13,35 @@ import {
     Select,
     TextField
 } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import { createPrompt, updatePrompt } from "@/src/actions/prompts"
-import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
 import type { Prompt } from "@/src/utils/api"
 
 type ModifyPromptDialogProps = {
-    prompt?: Prompt
+    prompt?: Partial<Prompt>
     open: boolean
     onClose: () => void
     onFetch: () => void
 }
 
+const defaultValue = (prompt?: Partial<Prompt>) => ({
+    name: prompt?.name || "",
+    description: prompt?.description || "",
+    model: prompt?.model || "",
+    messages: prompt?.messages || [{ role: "system", content: "" }]
+})
+
 const ModifyPromptDialog = ({
     open, onClose, onFetch, prompt
 }: ModifyPromptDialogProps) => {
+
     const { control, handleSubmit, reset } = useForm({
-        defaultValues: {
-            name: prompt?.name || "",
-            description: prompt?.description || "",
-            model: prompt?.model || "",
-            messages: prompt?.messages || [{ role: "system", content: "" }]
-        }
+        defaultValues: defaultValue(prompt)
     })
+
+    const isUpdate = useMemo(() => Boolean(prompt?.name), [prompt?.name])
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -46,12 +50,7 @@ const ModifyPromptDialog = ({
 
     useEffect(() => {
         if (prompt) {
-            reset({
-                name: prompt.name,
-                description: prompt.description,
-                model: prompt.model,
-                messages: prompt.messages
-            })
+            reset(defaultValue(prompt))
         }
     }, [prompt, reset])
 
@@ -65,11 +64,9 @@ const ModifyPromptDialog = ({
         onClose()
     }
 
-    const [confirmOpen, setConfirmOpen] = useState(false)
-
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>{prompt ? "Update Prompt" : "Add Prompt"}</DialogTitle>
+            <DialogTitle>{isUpdate ? "Update Prompt" : "Add Prompt"}</DialogTitle>
             <DialogContent>
                 <Controller
                     name="name"
@@ -124,22 +121,11 @@ const ModifyPromptDialog = ({
                 </Button>
             </DialogContent>
             <DialogActions>
-                {prompt && (
-                    <Button onClick={() => setConfirmOpen(true)} color="error">
-                        Delete
-                    </Button>
-                )}
                 <Button onClick={onClose} color={"inherit"}>Cancel</Button>
                 <Button onClick={handleSubmit(onSubmit)} color="primary">
                     {prompt ? "Update" : "Add"}
                 </Button>
             </DialogActions>
-            <ConfirmDeletePromptDialog
-                open={confirmOpen}
-                onClose={() => setConfirmOpen(false)}
-                onFetch={onFetch}
-                prompt={prompt}
-            />
         </Dialog>
     )
 }
