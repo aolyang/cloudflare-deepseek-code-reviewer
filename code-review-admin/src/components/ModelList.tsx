@@ -2,7 +2,7 @@
 import type { KeyboardEventHandler } from "react"
 
 import SearchIcon from "@mui/icons-material/Search"
-import { IconButton, Pagination, TextField } from "@mui/material"
+import { IconButton, LinearProgress, Pagination, TextField } from "@mui/material"
 import { useMemo } from "react"
 import { useEffect, useState } from "react"
 
@@ -34,10 +34,13 @@ export default function ModelsList() {
         setPage(value)
     }
 
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
+        setLoading(true)
         getModels(search, taskName, page).then(({ models, ...resultInfo }) => {
             setModels(models)
             setPageInfo(resultInfo)
+            setLoading(false)
         })
     }, [page, search, taskName])
 
@@ -57,6 +60,7 @@ export default function ModelsList() {
                 className={"py-2 -mx-1 px-1 overflow-y-auto"}
                 style={{ height: "calc(100% - 40px - 32px - 8px)" }}
             >
+                {loading ? <LinearProgress /> : null}
                 {models.map((model) => (
                     <div className={"mb-4"} key={model.id}>
                         <ModelCard model={model} onModelTaskNameClick={() => setTaskName(model.task.name)}/>
