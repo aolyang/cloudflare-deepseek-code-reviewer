@@ -22,9 +22,7 @@ tasks.get("/",
     }),
     async (c) => {
         const response = await cloudflare(c).ai.tasks.list({ account_id: c.env.ACCOUNT_ID })
-        const { result } = response
-
-        return c.json({ tasks: result })
+        return c.json({ tasks: response.result })
     }
 )
 
