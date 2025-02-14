@@ -1,13 +1,24 @@
-import { FormControl, InputLabel, Select, SelectChangeEvent } from "@mui/material"
+"use client"
+import type { SelectChangeEvent } from "@mui/material"
 
-import TaskCategoryItems from "@/src/components/TaskCategoryItems"
+import { MenuItem } from "@mui/material"
+import { FormControl, InputLabel, Select } from "@mui/material"
+import { useEffect, useState } from "react"
+
+import { getTasks } from "@/src/actions/tasks"
+import type { Task } from "@/src/utils/api"
 
 type TaskCategorySelectProps = {
     taskName: string
     onTaskNameSelect: (taskName: string) => void
 }
 
-const TaskCategorySelect = ({ taskName, onTaskNameSelect }: TaskCategorySelectProps) => {
+export default function TaskCategorySelect({ taskName, onTaskNameSelect }: TaskCategorySelectProps) {
+    const [ tasks, setTasks ] = useState<Task[]>([])
+
+    useEffect(() => {
+        getTasks().then(res => setTasks(res.tasks))
+    }, [])
     const handleChange = (event: SelectChangeEvent) => {
         onTaskNameSelect(event.target.value)
     }
@@ -23,10 +34,11 @@ const TaskCategorySelect = ({ taskName, onTaskNameSelect }: TaskCategorySelectPr
                 onChange={handleChange}
                 style={{ width: "200px" }}
             >
-                <TaskCategoryItems />
+                <MenuItem value={""}><em>None</em></MenuItem>
+                {tasks.map(task => (
+                    <MenuItem key={task.id} value={task.name}>{task.name}</MenuItem>
+                ))}
             </Select>
         </FormControl>
     )
 }
-
-export default TaskCategorySelect

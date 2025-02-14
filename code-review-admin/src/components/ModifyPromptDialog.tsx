@@ -17,8 +17,8 @@ import { useEffect, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import { createPrompt, updatePrompt } from "@/src/actions/prompts"
-import type { Prompt } from "@/src/utils/prompts"
 import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
+import type { Prompt } from "@/src/utils/api"
 
 type ModifyPromptDialogProps = {
     prompt?: Prompt

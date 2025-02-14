@@ -25,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     <AppRouterCacheProvider>
                         <ClientThemeProvider>
                             <Container className={"size-full"} maxWidth={"sm"}>
-                                <div className={"flex items-center"}>
+                                <div className={"flex items-center h-[56px]"}>
                                     Cloudflare AI Code Review
                                     <div className={"flex-1"}/>
                                     <nav className={"flex gap-2 underline"}>
@@ -35,7 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                                     <ToggleTheme/>
                                     <Login2Github/>
                                 </div>
-                                <div style={{ height: "calc(100% - 40px)"}}>
+                                <div style={{ height: "calc(100% - 56px)"}}>
                                     {children}
                                 </div>
                             </Container>

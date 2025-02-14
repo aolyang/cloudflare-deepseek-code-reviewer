@@ -1,6 +1,6 @@
 "use server"
+import type { Prompt } from "@/src/utils/api"
 import { commonHeaders } from "@/src/utils/api"
-import type { Prompt } from "@/src/utils/prompts"
 
 export const getPrompts = async () => {
     return fetch(`${process.env.API_URL}/api/prompts`, {

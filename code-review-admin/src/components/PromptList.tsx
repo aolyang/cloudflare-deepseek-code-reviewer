@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { getPrompts } from "@/src/actions/prompts"
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
 import PromptCard from "@/src/components/PromptCard"
-import type { Prompt } from "@/src/utils/prompts"
+import type { Prompt } from "@/src/utils/api"
 
 const PromptList = () => {
     const [prompts, setPrompts] = useState<Prompt[]>([])

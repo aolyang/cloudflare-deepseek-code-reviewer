@@ -33,7 +33,8 @@ export const ModelQuerySchema = z.object({
 })
 
 export const ModelsQuerySchema = z.object({
-    search: z.string().optional().openapi({ description: "Search query", example: recommendedModel.name })
+    search: z.string().optional().openapi({ description: "Search query", example: recommendedModel.name }),
+    task:   z.string().optional().openapi({ description: "Task name", example: recommendedModel.task.name })
 }).merge(pageQuerySchema)
 
 export const ModelsResponseSchema = z.object({

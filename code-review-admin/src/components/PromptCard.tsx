@@ -8,7 +8,7 @@ import { useState } from "react"
 
 import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
-import type { Prompt } from "@/src/utils/prompts"
+import type { Prompt } from "@/src/utils/api"
 
 type PromptCardProps = {
     prompt: Prompt

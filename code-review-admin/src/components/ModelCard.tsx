@@ -1,6 +1,6 @@
 import { Card, CardContent, Chip, Tooltip, Typography } from "@mui/material"
 
-import type { Model } from "@/src/utils/models"
+import type { Model } from "@/src/utils/api"
 
 type ModelCardProps = {
     model: Model
@@ -9,7 +9,7 @@ type ModelCardProps = {
 
 export default function ModelCard({ model, onModelTaskSelect }: ModelCardProps) {
     return (
-        <Card key={model.id} style={{ width: "100%" }}>
+        <Card key={model.id}>
             <CardContent>
                 <Typography variant="h6" component="div">{model.name}</Typography>
                 <Tooltip title={model.task.description} placement={"bottom-start"}>
