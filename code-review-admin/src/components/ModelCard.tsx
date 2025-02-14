@@ -1,5 +1,6 @@
-import { Card, CardContent, Typography, Chip } from "@mui/material"
-import { Model } from "@/src/utils/models"
+import { Card, CardContent, Chip, Tooltip, Typography } from "@mui/material"
+
+import type { Model } from "@/src/utils/models"
 
 type ModelCardProps = {
     model: Model
@@ -7,12 +8,13 @@ type ModelCardProps = {
 
 export default function ModelCard({ model }: ModelCardProps) {
     return (
-        <Card key={model.id} style={{ width: "100%", maxWidth: "300px" }}>
+        <Card key={model.id} style={{ width: "100%" }}>
             <CardContent>
-                <Typography variant="h5" component="div">{model.name}</Typography>
+                <Typography variant="h6" component="div">{model.name}</Typography>
+                <Tooltip title={model.task.description} placement={"bottom-start"}>
+                    <Chip label={model.task.name} size={"small"} />
+                </Tooltip>
                 <Typography variant="body2" color="text.secondary">{model.description}</Typography>
-                <Chip label={model.task.name} style={{ marginTop: "8px" }} />
-                <Typography variant="body2" color="text.secondary" style={{ marginTop: "8px" }}>{model.task.description}</Typography>
             </CardContent>
         </Card>
     )

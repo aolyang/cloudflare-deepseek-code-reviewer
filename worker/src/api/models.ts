@@ -36,6 +36,7 @@ models.get("/",
     async (c) => {
         const query = ModelsQuerySchema.parse(c.req.query())
 
+        if (!query.search) delete query.search
         const response = await cloudflare(c).ai.models.list({ ...query, account_id: c.env.ACCOUNT_ID })
         const { result, result_info } = response
 

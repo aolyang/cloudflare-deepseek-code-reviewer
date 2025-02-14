@@ -2,10 +2,11 @@ import "./globals.css"
 
 import type { Metadata } from "next"
 
+import { Container } from "@mui/material"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
+import Link from "next/link"
 import { SessionProvider } from "next-auth/react"
 import React from "react"
-import Link from "next/link"
 
 import ClientThemeProvider from "@/src/components/ClientThemeProvider"
 import Login2Github from "@/src/components/Login2Github"
@@ -23,17 +24,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <SessionProvider>
                     <AppRouterCacheProvider>
                         <ClientThemeProvider>
-                            <div className={"flex items-center"}>
-                                Cloudflare AI Code Review
-                                <div className={"flex-1"} />
-                                <nav>
-                                    <Link href="/">Home</Link>
-                                    <Link href="/models">Models</Link>
-                                </nav>
-                                <ToggleTheme />
-                                <Login2Github />
-                            </div>
-                            {children}
+                            <Container maxWidth={"sm"}>
+                                <div className={"flex items-center"}>
+                                    Cloudflare AI Code Review
+                                    <div className={"flex-1"}/>
+                                    <nav className={"flex gap-2 underline"}>
+                                        <Link href="/">Home</Link>
+                                        <Link href="/models">Models</Link>
+                                    </nav>
+                                    <ToggleTheme/>
+                                    <Login2Github/>
+                                </div>
+                                {children}
+                            </Container>
                         </ClientThemeProvider>
                     </AppRouterCacheProvider>
                 </SessionProvider>
