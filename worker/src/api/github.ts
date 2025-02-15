@@ -20,12 +20,8 @@ github.post("/webhook", async (c) => {
     }
 
     const body = await c.req.json()
-    console.log("body", body)
-    if (body.action === "opened" && body.issue) {
-        return c.json({ message: "Welcome! Issue created." })
-    }
-
-    app.webhooks.on("issues.opened", async ({ octokit, payload }) => {
+    console.log("body action", body.action)
+    app.webhooks.on("issue_comment.created", async ({ octokit, payload }) => {
         console.log("issues.opened", payload)
         await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
             {
@@ -36,9 +32,10 @@ github.post("/webhook", async (c) => {
             }
         )
     })
-    app.webhooks.on("commit_comment.created", async ({ octokit, payload }) => {
-        console.log("Commit comment created", payload)
-    })
+
+    if (body.action === "opened" && body.issue) {
+        return c.json({ message: "Welcome! Issue created." })
+    }
     return c.json({ message: "Event not handled" })
 })
 
