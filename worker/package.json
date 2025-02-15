@@ -5,7 +5,7 @@
         "deploy": "wrangler deploy --minify",
         "lint-type": "eslint ./src/cloudflare-env.d.ts --fix",
         "cf-typegen": "wrangler types --env-interface CloudflareEnv src/cloudflare-env.d.ts && npm run lint-type",
-        "proxy_hooks": "smee --url https://smee.io/ZcZi3Sy51OuQ9ZJ --path /api/github/webhook --port 3000"
+        "proxy_hooks": "smee --url https://smee.io/ZcZi3Sy51OuQ9ZJ --path /api/github/webhook --port 8787"
     },
     "dependencies": {
         "@hono/zod-validator": "^0.4.2",
