@@ -21,17 +21,23 @@ github.post("/webhook", async (c) => {
 
     const body = await c.req.json()
     console.log("body action", body.action)
-    app.webhooks.on("issue_comment.created", async ({ octokit, payload }) => {
-        console.log("issues.opened", payload)
+
+    if (body.action === "issue_comment.created") {
+        const { octokit, payload } = await app.webhooks.receive({
+            id: c.req.header("x-github-delivery")!,
+            name: "issue_comment",
+            payload: body
+        })
+        console.log("issue_comment.created", payload)
         await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
             {
                 owner: payload.repository.owner.login,
                 repo: payload.repository.name,
                 issue_number: payload.issue.number,
-                body: "Hello there from [octokit](https://github.com/octokit/app.js/)"
+                body: "hello"
             }
         )
-    })
+    }
 
     if (body.action === "opened" && body.issue) {
         return c.json({ message: "Welcome! Issue created." })
