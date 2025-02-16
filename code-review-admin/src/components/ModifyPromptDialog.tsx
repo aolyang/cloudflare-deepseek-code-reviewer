@@ -101,6 +101,7 @@ const ModifyPromptDialog = ({
                                     <Select{...field}>
                                         <MenuItem value="system">System</MenuItem>
                                         <MenuItem value="user">User</MenuItem>
+                                        <MenuItem value="assistant">Assistant</MenuItem>
                                     </Select>
                                 </FormControl>
                             )}

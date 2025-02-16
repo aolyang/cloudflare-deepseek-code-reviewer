@@ -15,7 +15,7 @@ export interface Prompt {
     name: string
     description: string
     model: string
-    messages: { role: string; content: string }[]
+    messages: { role: "system" | "user" | "assistant"; content: string }[]
 }
 
 export interface PageResultInfo {
