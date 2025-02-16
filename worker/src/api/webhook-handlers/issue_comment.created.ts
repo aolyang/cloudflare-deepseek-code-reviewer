@@ -1,5 +1,6 @@
 import type { EmitterWebhookEvent} from "@octokit/webhooks"
 import type { GitHubApp } from "../../utils/github"
+import type { Context } from "hono"
 
 // https://docs.github.com/en/webhooks/webhook-events-and-payloads#create
 
@@ -27,6 +28,30 @@ export const isIssueCommentCreated = (
     )
 }
 
-export const issueCommentCreatedHandler = async (app: GitHubApp, payload: PayloadIssueCommentCreated) => {
+export const issueCommentCreatedHandler = async (ctx: Context<{ Bindings: CloudflareEnv }>, app: GitHubApp, payload: PayloadIssueCommentCreated) => {
     console.log("payload", payload)
+
+    const commentBody = payload.comment.body.trim()
+
+    if (commentBody.startsWith("/")) {
+        const command = commentBody.slice(1).split(" ")[0]
+
+        const commandExists = await ctx.env.prompts.get(command)
+
+        if (commandExists) {
+            await app.octokit.issues.createComment({
+                owner: payload.repository.owner.login,
+                repo: payload.repository.name,
+                issue_number: payload.issue.number,
+                body: `hello match the command ${command}`
+            })
+        } else {
+            await app.octokit.issues.createComment({
+                owner: payload.repository.owner.login,
+                repo: payload.repository.name,
+                issue_number: payload.issue.number,
+                body: `hello, ${command} command not supported yet`
+            })
+        }
+    }
 }
