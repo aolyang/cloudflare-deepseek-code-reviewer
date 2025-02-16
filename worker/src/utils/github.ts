@@ -16,3 +16,5 @@ export const githubApp = (
         secret: ctx.env.GITHUB_APP_WEBHOOK_SECRET
     }
 })
+
+export type GitHubApp = ReturnType<typeof githubApp>

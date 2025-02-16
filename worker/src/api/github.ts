@@ -1,13 +1,12 @@
 import { Hono } from "hono"
 
 import { githubApp } from "../utils/github"
+import { GitHubWebHook } from "./webhook-handlers"
 
 const github = new Hono<{ Bindings: CloudflareEnv }>()
 
-let app: ReturnType<typeof githubApp>
-
 github.post("/webhook", async (c) => {
-    if (!app) app = githubApp(c)
+    const app = githubApp(c)
 
     const signature = c.req.header("x-hub-signature-256")
 
@@ -19,27 +18,11 @@ github.post("/webhook", async (c) => {
         return c.json({ error: "Invalid signature" }, 400)
     }
 
-    const body = await c.req.json()
-    console.log("body action", body.action)
+    const payload = await c.req.json()
 
-    if (body.action === "issue_comment.created") {
-        const { octokit, payload } = await app.webhooks.receive({
-            id: c.req.header("x-github-delivery")!,
-            name: "issue_comment",
-            payload: body
-        })
-        console.log("issue_comment.created", payload)
-        await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments",
-            {
-                owner: payload.repository.owner.login,
-                repo: payload.repository.name,
-                issue_number: payload.issue.number,
-                body: "hello"
-            }
-        )
-    }
+    if (GitHubWebHook.isIssueCommentCreated(payload)) await GitHubWebHook.issueCommentCreatedHandler(app, payload)
 
-    if (body.action === "opened" && body.issue) {
+    if (payload.action === "opened" && payload.issue) {
         return c.json({ message: "Welcome! Issue created." })
     }
     return c.json({ message: "Event not handled" })
