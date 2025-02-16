@@ -42,15 +42,10 @@ const PromptCard = ({ prompt, onFetch }: PromptCardProps) => {
                     </div>
                     : null
                 }
-                <Typography variant="h5" component="div">
-                    /{prompt.name}
-                </Typography>
-                <Typography className={"py-2"} variant="body2" color="text.secondary">
-                    {prompt.description}
-                </Typography>
+                <Typography variant="h5" component="div">/{prompt.name}</Typography>
+                <Typography className={"py-2"} variant="body2" color="text.secondary">{prompt.description}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                    <AutoAwesomeIcon className={"mr-2"} />
-                    {prompt.model || "(No Model Select !!!)"}
+                    <AutoAwesomeIcon className={"mr-2"} />{prompt.model || "(No Model Select !!!)"}
                 </Typography>
                 <hr className={"my-1"} />
                 {prompt.messages.map((message, index) => (
