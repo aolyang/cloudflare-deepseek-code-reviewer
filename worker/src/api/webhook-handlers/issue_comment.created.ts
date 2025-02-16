@@ -1,6 +1,6 @@
-import type { EmitterWebhookEvent} from "@octokit/webhooks"
-import type { GitHubApp } from "../../utils/github"
+import type { EmitterWebhookEvent } from "@octokit/webhooks"
 import type { Context } from "hono"
+import type { GitHubApp } from "../../utils/github"
 
 // https://docs.github.com/en/webhooks/webhook-events-and-payloads#create
 
@@ -22,36 +22,41 @@ export const isIssueCommentCreated = (
         "body" in payload.comment &&
         "user" in payload.comment &&
 
-        !! payload.comment.user &&
+        !!payload.comment.user &&
         typeof payload.comment.user === "object" &&
         "login" in payload.comment?.user
     )
 }
 
-export const issueCommentCreatedHandler = async (ctx: Context<{ Bindings: CloudflareEnv }>, app: GitHubApp, payload: PayloadIssueCommentCreated) => {
-    console.log("payload", payload)
-
+export const issueCommentCreatedHandler = async (
+    ctx: Context<{ Bindings: CloudflareEnv }>,
+    app: GitHubApp,
+    payload: PayloadIssueCommentCreated
+) => {
     const commentBody = payload.comment.body.trim()
+
+    const installationId = payload.installation?.id
+    if (!installationId) return ctx.json({ message: "installation not found" })
 
     if (commentBody.startsWith("/")) {
         const command = commentBody.slice(1).split(" ")[0]
-
         const commandExists = await ctx.env.prompts.get(command)
 
+        const octokit = await app.getInstallationOctokit(installationId)
+
+        let message
         if (commandExists) {
-            await app.octokit.issues.createComment({
-                owner: payload.repository.owner.login,
-                repo: payload.repository.name,
-                issue_number: payload.issue.number,
-                body: `hello match the command ${command}`
-            })
+            message = `hello, ${command} command found`
         } else {
-            await app.octokit.issues.createComment({
-                owner: payload.repository.owner.login,
-                repo: payload.repository.name,
-                issue_number: payload.issue.number,
-                body: `hello, ${command} command not supported yet`
-            })
+            message = `hello, ${command} command not support yet`
         }
+        await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
+            owner: payload.repository.owner.login,
+            repo: payload.repository.name,
+            issue_number: payload.issue.number,
+            body: message
+        })
     }
+
+    return ctx.json({ message: "received" })
 }

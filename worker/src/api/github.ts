@@ -20,11 +20,9 @@ github.post("/webhook", async (c) => {
 
     const payload = await c.req.json()
 
-    if (GitHubWebHook.isIssueCommentCreated(payload)) await GitHubWebHook.issueCommentCreatedHandler(c, app, payload)
+    if (GitHubWebHook.isIssueCommentCreated(payload))
+        return await GitHubWebHook.issueCommentCreatedHandler(c, app, payload)
 
-    if (payload.action === "opened" && payload.issue) {
-        return c.json({ message: "Welcome! Issue created." })
-    }
     return c.json({ message: "Event not handled" })
 })
 

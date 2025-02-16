@@ -2,6 +2,10 @@ import type { Context } from "hono"
 
 import { App } from "@octokit/app"
 
+// convert private key to pkcs8 format before you use it
+// openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in your-private-key.pem -out out.pkcs8.pem
+// care about -topk8, it's do a forcely convert no matter key content is crypt or non-standard
+
 // https://github.com/octokit/app.js/?tab=readme-ov-file#usage
 export const githubApp = (
     ctx: Context<{ Bindings: CloudflareEnv }>
