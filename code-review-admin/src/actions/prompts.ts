@@ -16,8 +16,8 @@ export const createPrompt = async (prompt: Prompt) => {
     }).then(res => res.json())
 }
 
-export const updatePrompt = async (prompt: Partial<Prompt>) => {
-    return fetch(`${process.env.API_URL}/api/prompts/${prompt.name}`, {
+export const updatePrompt = async (key: string, prompt: Partial<Prompt>) => {
+    return fetch(`${process.env.API_URL}/api/prompts/${key}`, {
         method: "POST",
         headers: commonHeaders,
         body: JSON.stringify(prompt)

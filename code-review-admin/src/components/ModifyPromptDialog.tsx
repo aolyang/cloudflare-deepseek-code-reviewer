@@ -56,8 +56,9 @@ const ModifyPromptDialog = ({
     }, [prompt, reset])
 
     const onSubmit = async (data: Prompt) => {
-        if (isUpdate) {
-            await updatePrompt(data)
+        // avoid Non-null assertion operator
+        if (isUpdate && prompt?.name) {
+            await updatePrompt(prompt.name, data)
         } else {
             await createPrompt(data)
         }

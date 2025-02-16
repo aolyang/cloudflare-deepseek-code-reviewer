@@ -125,7 +125,10 @@ prompts.post("/:key",
         if (new TextEncoder().encode(promptStr).length > KVValueLimit) {
             return c.json({ error: "Prompt size exceeds 25MB limit" }, 400)
         }
-        await c.env.prompts.put(key, promptStr)
+
+        if (newPrompt.name !== key) c.env.prompts.delete(key)
+
+        await c.env.prompts.put(newPrompt.name, promptStr)
         return c.json({ success: true, key, prompt: newPrompt })
     }
 )
