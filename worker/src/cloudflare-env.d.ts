@@ -1,5 +1,6 @@
 interface CloudflareEnv {
     prompts: KVNamespace
+    AI: Ai
 
     ACCOUNT_ID: string
     CLOUDFLARE_EMAIL: string
