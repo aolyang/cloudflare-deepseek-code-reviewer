@@ -6,6 +6,9 @@ import type { GitHubApp } from "../../utils/github"
 
 export type PayloadIssueCommentCreated = EmitterWebhookEvent<"issue_comment.created">["payload"]
 
+// TODO check the action type more confidently
+// I am not sure, this is Gemini suggestion, I have not found the best practice for this yet
+// I think this is fine for now, I will update this later
 export const isIssueCommentCreated = (
     payload: { action: string; issue?: object; comment?: object }
 ): payload is PayloadIssueCommentCreated => {
