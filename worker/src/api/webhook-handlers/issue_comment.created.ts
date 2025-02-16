@@ -1,6 +1,9 @@
 import type { EmitterWebhookEvent } from "@octokit/webhooks"
 import type { Context } from "hono"
 import type { GitHubApp } from "../../utils/github"
+import type { Prompt } from "../prompts.schema"
+
+import { jp } from "../../utils/common"
 
 // https://docs.github.com/en/webhooks/webhook-events-and-payloads#create
 
@@ -31,35 +34,57 @@ export const isIssueCommentCreated = (
     )
 }
 
+// TODO fix this type
+type NotVerifiedAIResponse = {
+    response: string
+    usage: { // not sure
+        prompt_token: number
+        completion_token: number
+        total_tokens: number
+    }
+}
+
 export const issueCommentCreatedHandler = async (
     ctx: Context<{ Bindings: CloudflareEnv }>,
     app: GitHubApp,
     payload: PayloadIssueCommentCreated
 ) => {
-    const commentBody = payload.comment.body.trim()
+    const commentLines = payload.comment.body.trim().split("\n")
+    const lastLine = commentLines.pop()
+    if (!lastLine || !lastLine.startsWith("/")) return ctx.json({ message: "no command found" })
 
     const installationId = payload.installation?.id
     if (!installationId) return ctx.json({ message: "installation not found" })
 
-    if (commentBody.startsWith("/")) {
-        const command = commentBody.slice(1).split(" ")[0]
-        const commandExists = await ctx.env.prompts.get(command)
+    const command = lastLine.slice(1).split(" ")[0]
+    const prompt = jp<Prompt>(await ctx.env.prompts.get(command) || "")
 
-        const octokit = await app.getInstallationOctokit(installationId)
+    const octokit = await app.getInstallationOctokit(installationId)
 
-        let message
-        if (commandExists) {
-            message = `hello, ${command} command found`
-        } else {
-            message = `hello, ${command} command not support yet`
-        }
-        await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
-            owner: payload.repository.owner.login,
-            repo: payload.repository.name,
-            issue_number: payload.issue.number,
-            body: message
-        })
+    let message = ""
+    if (!prompt) {
+        message = `hello, ${command} command not support yet`
+    } else {
+        const messages = [...prompt.messages]
+
+        if (commentLines.length) messages.push({ role: "user", content: commentLines.join("\n")})
+
+        const output = await ctx.env.AI.run(prompt.model as "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", {
+            messages,
+            stream: false
+        }) as NotVerifiedAIResponse
+        message += output.response
+        message += "\nToken usage:"
+        message += `\n-Prompt: ${output.usage.prompt_token}`
+        message += `\n-Completion: ${output.usage.completion_token}`
+        message += `\n-Total: ${output.usage.total_tokens}`
     }
+    await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
+        owner: payload.repository.owner.login,
+        repo: payload.repository.name,
+        issue_number: payload.issue.number,
+        body: message
+    })
 
     return ctx.json({ message: "received" })
 }
