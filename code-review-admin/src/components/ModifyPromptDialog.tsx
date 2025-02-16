@@ -11,13 +11,16 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField
+    TextField,
+    Autocomplete
 } from "@mui/material"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState, useCallback } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import { createPrompt, updatePrompt } from "@/src/actions/prompts"
+import { getModels } from "@/src/actions/models"
 import type { Prompt } from "@/src/utils/api"
+import { debounce } from "@/src/utils/debounce"
 
 type ModifyPromptDialogProps = {
     prompt?: Partial<Prompt>
@@ -66,6 +69,16 @@ const ModifyPromptDialog = ({
         onClose()
     }
 
+    const [models, setModels] = useState<string[]>([])
+    const fetchModels = useCallback(
+        debounce((search: string) => {
+            getModels(search).then(({ models }) => {
+                setModels(models.map(model => model.name))
+            })
+        }, 300),
+        []
+    )
+
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>{isUpdate ? "Update Prompt" : "Add Prompt"}</DialogTitle>
@@ -88,7 +101,14 @@ const ModifyPromptDialog = ({
                     name="model"
                     control={control}
                     render={({ field }) => (
-                        <TextField{...field} label="Model" fullWidth margin="normal" />
+                        <Autocomplete
+                            {...field}
+                            options={models}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Model" fullWidth margin="normal" onChange={(e) => fetchModels(e.target.value)} />
+                            )}
+                            onChange={(_, value) => field.onChange(value)}
+                        />
                     )}
                 />
                 {fields.map((field, index) => (
