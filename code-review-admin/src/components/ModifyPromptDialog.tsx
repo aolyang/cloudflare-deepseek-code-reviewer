@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 import {
+    Autocomplete,
     Button,
     Dialog,
     DialogActions,
@@ -11,14 +12,12 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
-    Autocomplete
-} from "@mui/material"
-import { useEffect, useMemo, useState, useCallback } from "react"
+    TextField} from "@mui/material"
+import { useCallback,useEffect, useMemo, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 
-import { createPrompt, updatePrompt } from "@/src/actions/prompts"
 import { getModels } from "@/src/actions/models"
+import { createPrompt, updatePrompt } from "@/src/actions/prompts"
 import type { Prompt } from "@/src/utils/api"
 import { debounce } from "@/src/utils/debounce"
 
@@ -70,17 +69,16 @@ const ModifyPromptDialog = ({
     }
 
     const [models, setModels] = useState<string[]>([])
-    const fetchModels = useCallback(
-        debounce((search: string) => {
-            getModels(search).then(({ models }) => {
-                setModels(models.map(model => model.name))
-            })
-        }, 300),
-        []
-    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchModels = useCallback(debounce((search: string) => {
+        getModels(search).then(({ models }) => {
+            setModels(models.map(model => model.name))
+        })
+    }, 300),
+    [])
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onClose} maxWidth={"sm"} fullWidth>
             <DialogTitle>{isUpdate ? "Update Prompt" : "Add Prompt"}</DialogTitle>
             <DialogContent>
                 <Controller
@@ -117,7 +115,7 @@ const ModifyPromptDialog = ({
                             name={`messages.${index}.role`}
                             control={control}
                             render={({ field }) => (
-                                <FormControl style={{ minWidth: 140 }} margin="normal">
+                                <FormControl style={{ minWidth: 120 }} margin="normal">
                                     <InputLabel>Role</InputLabel>
                                     <Select{...field}>
                                         <MenuItem value="system">System</MenuItem>
@@ -131,7 +129,7 @@ const ModifyPromptDialog = ({
                             name={`messages.${index}.content`}
                             control={control}
                             render={({ field }) => (
-                                <TextField{...field} label="Content" multiline fullWidth maxRows={3} margin="normal" />
+                                <TextField{...field} label="Content" fullWidth margin="normal" />
                             )}
                         />
                         <IconButton onClick={() => remove(index)}>
