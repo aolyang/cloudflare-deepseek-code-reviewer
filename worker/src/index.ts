@@ -8,6 +8,7 @@ import github from "./api/github"
 import health from "./api/health"
 import models from "./api/models"
 import prompts from "./api/prompts"
+import prompts$key from "./api/prompts[key]"
 import tasks from "./api/tasks"
 import auth from "./middleware/auth"
 
@@ -18,7 +19,9 @@ app.route("/health", health)
 
 app.route("/api/public/models", models)
 app.route("/api/public/tasks", tasks)
+
 app.route("/api/prompts", prompts)
+app.route("/api/prompts/:key", prompts$key)
 app.route("/api/github", github)
 
 const appName = "Cloudflare AI code review worker"
