@@ -139,3 +139,7 @@ more in `.env` file:
 2. Add `NEXTAUTH_URL` to your cloud public domain url
 
 this deploy guide is more like a draft, any problem you can submit an issue, I will respond and update as quick as possible.
+
+## Chinese Version
+
+For the Chinese version of this deployment guide, please refer to [this link](./deploy.zh.md).
