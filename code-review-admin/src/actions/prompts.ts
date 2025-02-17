@@ -30,3 +30,11 @@ export const deletePrompt = async (promptName: string) => {
         headers: commonHeaders
     }).then(res => res.json())
 }
+
+export const importPrompts = async (prompts: Prompt[]) => {
+    return fetch(`${process.env.API_URL}/api/prompts`, {
+        method: "PUT",
+        headers: commonHeaders,
+        body: JSON.stringify(prompts)
+    }).then(res => res.json())
+}
