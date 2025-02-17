@@ -2,6 +2,7 @@ import "./globals.css"
 
 import type { Metadata } from "next"
 
+import GitHubIcon from "@mui/icons-material/GitHub"
 import { Container } from "@mui/material"
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter"
 import Link from "next/link"
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
     description: "A code review tool powered by Cloudflare worker AI"
 }
 
+const repo = "https://github.com/aolyang/cloudflare-deepseek-code-reviewer"
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
@@ -26,7 +29,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                         <ClientThemeProvider>
                             <Container className={"size-full"} maxWidth={"sm"}>
                                 <div className={"flex items-center gap-2 h-[56px]"}>
-                                    Cloudflare AI Code Review
+                                    <Link className={"flex gap-2"} href={repo} title={repo}>
+                                        Cloudflare AI Code Review
+                                        <GitHubIcon/>
+                                    </Link>
                                     <div className={"flex-1"}/>
                                     <nav className={"flex gap-2 underline"}>
                                         <Link href="/">Home</Link>
@@ -35,7 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                                     <ToggleTheme/>
                                     <Login2Github/>
                                 </div>
-                                <div style={{ height: "calc(100% - 56px)"}}>
+                                <div style={{ height: "calc(100% - 56px)" }}>
                                     {children}
                                 </div>
                             </Container>
