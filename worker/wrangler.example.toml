@@ -8,5 +8,8 @@ compatibility_date = "2025-01-29"
 compatibility_flags = [ "nodejs_compat" ]
 
 [[kv_namespaces]]
-binding = ""
+binding = "prompts"
 id = ""
+
+[ai]
+binding="AI"
