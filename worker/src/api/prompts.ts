@@ -7,6 +7,7 @@ import { resolver } from "hono-openapi/zod"
 
 import { ResponsePromptsSchema } from "./prompts.schema"
 import { PromptSchema } from "./prompts.schema"
+import { promptOverLimit } from "../utils/common"
 
 const prompts = new Hono<{ Bindings: CloudflareEnv }>()
 
@@ -141,6 +142,38 @@ prompts.delete("/:key",
         const key = c.req.param("key")
         await c.env.prompts.delete(key)
         return c.json({ success: true })
+    }
+)
+
+prompts.put("/",
+    describeRoute({
+        description: "Upload a JSON file containing an array of Prompt objects",
+        requestBody: {
+            content: {
+                "application/json": {
+                    schema: resolver(z.array(PromptSchema))
+                }
+            }
+        }
+    }),
+    async (c) => {
+        const promptsArray = await c.req.json()
+        const parsedPrompts = z.array(PromptSchema).safeParse(promptsArray)
+
+        if (!parsedPrompts.success) {
+            return c.json({ error: "Invalid JSON file" }, 400)
+        }
+        const failed: string[] = []
+        for (const prompt of parsedPrompts.data) {
+            const { str, oversize } = promptOverLimit(prompt)
+            if (oversize) {
+                failed.push(prompt.name)
+                continue
+            }
+            await c.env.prompts.put(prompt.name, promptStr)
+        }
+        
+        return c.json({ success: true, message: failed.join(",") + " are failed" })
     }
 )
 
