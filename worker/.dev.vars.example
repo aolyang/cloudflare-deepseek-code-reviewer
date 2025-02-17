@@ -1,3 +1,4 @@
+# middleware/auth.ts, for bearAuth usage
 AUTH_TOKEN=
 
 ACCOUNT_ID=
