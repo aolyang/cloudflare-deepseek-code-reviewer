@@ -4,7 +4,8 @@ import type { GitHubApp } from "../../utils/github"
 import type { Prompt } from "../prompts.schema"
 
 import { jp } from "../../utils/common"
-import collectGithubPullRequestPatch from "../handleArgumentIncludePatch"
+import { InternalPrompts } from "../../utils/prompt"
+import collectGithubPullRequestPatch from "./handleArgumentIncludePatch"
 
 // https://docs.github.com/en/webhooks/webhook-events-and-payloads#create
 
@@ -66,12 +67,12 @@ export const issueCommentCreatedHandler = async (
     if (!prompt) {
         message = `hello, ${command} command not support yet`
     } else {
-        const messages = [...prompt.messages]
-    
+        const messages = prompt.messages.concat(InternalPrompts)
+
         if (commentLines.length) messages.push({ role: "user", content: commentLines.join("\n")})
 
         if (args.includes("--include-patch")) {
-            const patch = await collectGithubPullRequestPatch(octokit, payload)
+            const patch = await collectGithubPullRequestPatch(octokit, payload as any)
             messages.push({
                 role: "user",
                 content: `pull request patch: ${patch}`
