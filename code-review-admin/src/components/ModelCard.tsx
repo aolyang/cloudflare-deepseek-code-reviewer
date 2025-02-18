@@ -1,10 +1,11 @@
+import type { Model } from "@/src/utils/api"
+
 import AddIcon from "@mui/icons-material/Add"
 import { Card, CardContent, Chip, IconButton, Tooltip, Typography } from "@mui/material"
 import { useSession } from "next-auth/react"
 import { useState } from "react"
 
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
-import type { Model } from "@/src/utils/api"
 
 type ModelCardProps = {
     model: Model

@@ -1,3 +1,5 @@
+import type { Prompt } from "@/src/utils/api"
+
 import AddIcon from "@mui/icons-material/Add"
 import DeleteIcon from "@mui/icons-material/Delete"
 import {
@@ -18,7 +20,6 @@ import { Controller, useFieldArray, useForm } from "react-hook-form"
 
 import { getModels } from "@/src/actions/models"
 import { createPrompt, updatePrompt } from "@/src/actions/prompts"
-import type { Prompt } from "@/src/utils/api"
 import { debounce } from "@/src/utils/debounce"
 
 type ModifyPromptDialogProps = {

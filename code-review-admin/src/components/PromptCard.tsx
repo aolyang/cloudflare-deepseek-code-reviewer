@@ -1,3 +1,5 @@
+import type { Prompt } from "@/src/utils/api"
+
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome"
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever"
 import SettingsIcon from "@mui/icons-material/Settings"
@@ -9,7 +11,6 @@ import { useState } from "react"
 
 import ConfirmDeletePromptDialog from "@/src/components/ConfirmDeletePromptDialog"
 import ModifyPromptDialog from "@/src/components/ModifyPromptDialog"
-import type { Prompt } from "@/src/utils/api"
 
 type PromptCardProps = {
     prompt: Prompt

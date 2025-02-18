@@ -1,5 +1,6 @@
 "use client"
 import type { KeyboardEventHandler } from "react"
+import type { Model, PageResultInfo } from "@/src/utils/api"
 
 import SearchIcon from "@mui/icons-material/Search"
 import { IconButton, LinearProgress, Pagination, TextField } from "@mui/material"
@@ -9,7 +10,6 @@ import { useEffect, useState } from "react"
 import { getModels } from "@/src/actions/models"
 import ModelCard from "@/src/components/ModelCard"
 import TaskCategorySelect from "@/src/components/TaskCategorySelect"
-import type { Model, PageResultInfo } from "@/src/utils/api"
 import { defaultPageResultInfo } from "@/src/utils/api"
 
 export default function ModelsList() {

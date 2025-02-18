@@ -4,7 +4,7 @@
     "author": "aolyang <aolyang@foxmail.com>",
     "license": "MIT",
     "devDependencies": {
-        "@aolyang/eslint-config": "0.0.0-beta.16",
+        "@aolyang/eslint-config": "0.0.0-beta.17",
         "@eslint/eslintrc": "^3.2.0",
         "@types/node": "^22.13.1",
         "eslint": "^9.20.0",

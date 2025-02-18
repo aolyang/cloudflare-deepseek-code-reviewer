@@ -1,9 +1,9 @@
 import type React from "react"
+import type { Prompt } from "@/src/utils/api"
 
 import { useState } from "react"
 
 import { getPrompts, importPrompts } from "@/src/actions/prompts"
-import type { Prompt } from "@/src/utils/api"
 import { downloadPrompts } from "@/src/utils/downloadPrompts"
 
 export default function usePrompts() {

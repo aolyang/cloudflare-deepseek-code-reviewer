@@ -1,3 +1,5 @@
+import type { Prompt } from "@/src/utils/api"
+
 import {
     Button,
     Dialog,
@@ -10,7 +12,6 @@ import {
 import React from "react"
 
 import { deletePrompt } from "@/src/actions/prompts"
-import type { Prompt } from "@/src/utils/api"
 
 type ConfirmDeletePromptDialogProps = {
     open: boolean

@@ -1,12 +1,12 @@
 "use client"
 import type { SelectChangeEvent } from "@mui/material"
+import type { Task } from "@/src/utils/api"
 
 import { MenuItem } from "@mui/material"
 import { FormControl, InputLabel, Select } from "@mui/material"
 import { useEffect, useState } from "react"
 
 import { getTasks } from "@/src/actions/tasks"
-import type { Task } from "@/src/utils/api"
 
 type TaskCategorySelectProps = {
     taskName: string
