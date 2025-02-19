@@ -11,8 +11,10 @@ export const InternalPrompts: Prompt["messages"] = [
 
 export const promptOverLimit = (prompt: Prompt) => {
     const str = JSON.stringify(prompt)
+    const size = new TextEncoder().encode(str).length
     return {
         str,
-        oversize: new TextEncoder().encode(str).length > KVValueLimit
+        size,
+        oversize: size > KVValueLimit
     }
 }

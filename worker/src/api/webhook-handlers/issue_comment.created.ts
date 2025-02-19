@@ -4,7 +4,7 @@ import type { GitHubApp } from "../../utils/github"
 import type { Prompt } from "../prompts.schema"
 
 import { jp } from "../../utils/common"
-import { InternalPrompts } from "../../utils/prompt"
+import { InternalPrompts, promptOverLimit } from "../../utils/prompt"
 import collectGithubPullRequestPatch from "./handleArgumentIncludePatch"
 
 // https://docs.github.com/en/webhooks/webhook-events-and-payloads#create
@@ -58,7 +58,7 @@ export const issueCommentCreatedHandler = async (
     const installationId = payload.installation?.id
     if (!installationId) return ctx.json({ message: "installation not found" })
 
-    const [command, ...args]= lastLine.slice(1).split(" ")
+    const [command, ...args] = lastLine.slice(1).split(" ")
     const prompt = jp<Prompt>(await ctx.env.prompts.get(command) || "")
 
     const octokit = await app.getInstallationOctokit(installationId)
@@ -69,26 +69,31 @@ export const issueCommentCreatedHandler = async (
     } else {
         const messages = prompt.messages.concat(InternalPrompts)
 
-        if (commentLines.length) messages.push({ role: "user", content: commentLines.join("\n")})
+        if (commentLines.length) messages.push({ role: "user", content: commentLines.join("\n") })
 
         if (args.includes("--include-patch")) {
-            const patch = await collectGithubPullRequestPatch(octokit, payload as any)
-            messages.push({
-                role: "user",
-                content: `pull request patch: ${patch}`
-            })
+            try {
+                const patch = await collectGithubPullRequestPatch(octokit, payload as any)
+                messages.push({
+                    role: "user",
+                    content: `pull request patch: \n${patch}`
+                })
+            } catch (e) {
+                console.log("get patch error", e)
+                return ctx.json({ message: "get patch error" })
+            }
         }
-        const output = await ctx.env.AI.run(prompt.model as "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", {
-            messages,
-            stream: false
-        }) as NotVerifiedAIResponse
+        const { oversize, size } = promptOverLimit(prompt)
+        if (oversize) {
+            message += `Your prompt message is over size limit, total: ${size}`
+        } else {
+            const output = await ctx.env.AI.run(prompt.model as "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", {
+                messages,
+                stream: false
+            }) as NotVerifiedAIResponse
 
-        message += output.response
-        message += "\nToken usage:"
-        message += `\n-Prompt: ${output.usage.prompt_token}`
-        message += `\n-Completion: ${output.usage.completion_token}`
-        message += `\n-Total: ${output.usage.total_tokens}`
-
+            message += output.response
+        }
     }
     await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
         owner: payload.repository.owner.login,

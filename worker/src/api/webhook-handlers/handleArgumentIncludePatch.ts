@@ -1,34 +1,20 @@
 import type { GitHubApp } from "../../utils/github"
-
-interface PullRequestPayload {
-    repository: {
-        owner: {
-            login: string
-        }
-        name: string
-    }
-    pull_request: {
-        number: number
-    }
-    installation?: {
-        id: number
-    }
-}
+import type { PayloadIssueCommentCreated } from "./issue_comment.created"
 
 const collectGithubPullRequestPatch = async (
     octokit: GitHubApp["octokit"],
-    payload: PullRequestPayload
+    payload: PayloadIssueCommentCreated
 ): Promise<string> => {
-    const { data: diff } = await (octokit as any).rest.pulls.get({
+    const { data: files } = await octokit.request("GET /repos/{owner}/{repo}/pulls/{pull_number}/files", {
         owner: payload.repository.owner.login,
         repo: payload.repository.name,
-        pull_number: payload.pull_request.number,
-        mediaType: {
-            format: "patch"
+        pull_number: payload.issue.number,
+        headers: {
+            "X-GitHub-Api-Version": "2022-11-28"
         }
     })
-    console.log("diff", diff)
-    return diff
+
+    return files.map(({ filename, patch }) => `${filename}\n${patch}`).join("\n")
 }
 
 export default collectGithubPullRequestPatch
