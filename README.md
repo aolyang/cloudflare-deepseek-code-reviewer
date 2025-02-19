@@ -41,7 +41,7 @@ recommend site: [https://prompts.chat/](https://prompts.chat)
 | show result                         |
 |-------------------------------------|
 | ![result](./assets/res-example.png) |
-
+| ![args](./assets/add-args.png)      |
 
 ## online [home page](https://github-ai.aolyang.me) | [api doc](https://cloudflare-deepseek-code-reviewer.aolyang.workers.dev)
 
