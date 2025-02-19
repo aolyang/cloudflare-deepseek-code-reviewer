@@ -58,7 +58,7 @@ export const issueCommentCreatedHandler = async (
     const installationId = payload.installation?.id
     if (!installationId) return ctx.json({ message: "installation not found" })
 
-    const [command, ...args]= lastLine.slice(1).split(" ")
+    const [command, ...args] = lastLine.slice(1).split(" ")
     const prompt = jp<Prompt>(await ctx.env.prompts.get(command) || "")
 
     const octokit = await app.getInstallationOctokit(installationId)
@@ -69,7 +69,7 @@ export const issueCommentCreatedHandler = async (
     } else {
         const messages = prompt.messages.concat(InternalPrompts)
 
-        if (commentLines.length) messages.push({ role: "user", content: commentLines.join("\n")})
+        if (commentLines.length) messages.push({ role: "user", content: commentLines.join("\n") })
 
         if (args.includes("--include-patch")) {
             const patch = await collectGithubPullRequestPatch(octokit, payload as any)
@@ -78,24 +78,33 @@ export const issueCommentCreatedHandler = async (
                 content: `pull request patch: ${patch}`
             })
         }
-        const output = await ctx.env.AI.run(prompt.model as "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", {
-            messages,
-            stream: false
-        }) as NotVerifiedAIResponse
+        console.log("messages", prompt)
+        try {
+            const output = await ctx.env.AI.run(prompt.model as "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b", {
+                messages,
+                stream: false
+            }) as NotVerifiedAIResponse
 
-        message += output.response
-        message += "\nToken usage:"
-        message += `\n-Prompt: ${output.usage.prompt_token}`
-        message += `\n-Completion: ${output.usage.completion_token}`
-        message += `\n-Total: ${output.usage.total_tokens}`
-
+            message += output.response
+            message += "\nToken usage:"
+            message += `\n-Prompt: ${output.usage.prompt_token}`
+            message += `\n-Completion: ${output.usage.completion_token}`
+            message += `\n-Total: ${output.usage.total_tokens}`
+        } catch (e) {
+            console.log("AI error", e)
+        }
     }
-    await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
-        owner: payload.repository.owner.login,
-        repo: payload.repository.name,
-        issue_number: payload.issue.number,
-        body: message
-    })
+
+    try {
+        await octokit.request("POST /repos/{owner}/{repo}/issues/{issue_number}/comments", {
+            owner: payload.repository.owner.login,
+            repo: payload.repository.name,
+            issue_number: payload.issue.number,
+            body: message
+        })
+    } catch (error) {
+        console.log("github request error", error)
+    }
 
     return ctx.json({ message: "received" })
 }

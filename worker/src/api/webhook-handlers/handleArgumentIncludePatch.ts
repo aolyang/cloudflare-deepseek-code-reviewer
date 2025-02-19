@@ -24,7 +24,7 @@ const collectGithubPullRequestPatch = async (
         repo: payload.repository.name,
         pull_number: payload.pull_request.number,
         mediaType: {
-            format: "patch"
+            format: "diff"
         }
     })
     console.log("diff", diff)
